@@ -4,6 +4,8 @@
 //
 //  Created by Matthew Armstrong on 2/23/24.
 //
+// https://youtu.be/n-f0BwxKSD0
+// https://medium.com/@bhumitapanara/ble-bluetooth-low-energy-with-ios-swift-7ef0de0dff78
 
 import SwiftUI
 import CoreBluetooth
