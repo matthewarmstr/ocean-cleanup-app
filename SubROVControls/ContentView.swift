@@ -16,6 +16,7 @@ class BluetoothModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager?
     private var connected_device: CBPeripheral?
     private var peripherals: [CBPeripheral] = []
+    private var characteristicToWriteTo: CBCharacteristic?
     @Published var peripheralNames: [String] = []
     
     override init() {
@@ -52,58 +53,38 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
         peripheral.discoverServices(nil)
     }
     
+    
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        guard peripheral.services != nil else {
+        guard let services = peripheral.services else {
             return
         }
-        print("discovered services for \(String(describing: peripheral.name))")
-        processServices()
+        for service in services {
+            print("discovered service \(String(describing: service))")
+            peripheral.discoverCharacteristics(nil, for: service)
+        }
+        
     }
     
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsForService error: Error?) {
-        // TO DO
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        guard let characteristics = service.characteristics else {
+            return
+        }
+        for characteristic in characteristics {
+            print("discovered characteristic \(String(describing: characteristic))")
+        }
+        characteristicToWriteTo = characteristics[0];
     }
     
-//    func processServices() {
-//        if let services = connected_device?.services {
-//            for service in services {
-//                connected_device?.discoverCharacteristics(nil, for: service)
-//                print("Service: Discover service \(service)")
-//                print("Service: UUID \(service)")
-//                
-//                if let characts = service.characteristics {
-//                    for charact in characts {
-//                        let cb_chara: CBCharacteristic = charact as CBCharacteristic
-//                        print("Char service \(service.uuid) Discover char \(cb_chara)")
-//                        print("Char: UUID \(cb_chara.uuid)")
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
-//    func writeValToConnectedDevice(data: Int) {
-//        var intvalue:Int = data
-//        var intdata = Data(bytes: &intvalue,
-//                          count: MemoryLayout.size(ofValue: intvalue))
-//        //connected_device.writeValue(intdata, for: CBCharacteristic, type: .withoutResponse)
-//    }
+    func writeHex(data: Int) {
+        var intData = data
+        let hexData = Data(bytes: &intData,
+                           count: MemoryLayout.size(ofValue: intData))
+        guard let writeCharacteristic = characteristicToWriteTo else {
+            return
+        }
+        connected_device?.writeValue(hexData, for: writeCharacteristic, type: .withResponse)
+    }
 }
-    // writeValToConnectedDevice(data: THEVALUE )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -119,7 +100,7 @@ struct ContentView: View {
                 // Forward Button
                 Button {
                     print("Action to move forward here")
-//                    bluetoothModel.writeValToConnectedDevice(data: 1)
+                    bluetoothModel.writeHex(data: 1)
                 } label: {
                     Text("FORWARD")
                         .foregroundColor(.black)
@@ -140,6 +121,7 @@ struct ContentView: View {
                         // Left button
                         Button {
                             print("Action to move left here")
+                            bluetoothModel.writeHex(data: 2)
                         } label: {
                             Image(systemName: "arrowshape.left.fill")
                                 .resizable()
@@ -158,6 +140,7 @@ struct ContentView: View {
                         // Right button
                         Button {
                             print("Action to move right here")
+                            bluetoothModel.writeHex(data: 3)
                         } label: {
                             Image(systemName: "arrowshape.right.fill")
                                 .resizable()
@@ -178,6 +161,7 @@ struct ContentView: View {
                     // Trash Collector Button
                     Button {
                         print("Activate Trash Collector")
+                        bluetoothModel.writeHex(data: 4)
                     } label: {
                         Image(systemName: "trash.circle.fill")
                             .resizable()
