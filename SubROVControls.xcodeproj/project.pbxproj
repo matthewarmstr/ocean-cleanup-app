@@ -434,7 +434,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SubROVControls/Preview Content\"";
-				DEVELOPMENT_TEAM = B7ZFP4T9F9;
+				DEVELOPMENT_TEAM = G68QB4QYA6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow to interact with Bluetooth devices";
@@ -449,7 +449,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ucd.SubROVControls2;
+				PRODUCT_BUNDLE_IDENTIFIER = ucd.SubROVControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -465,7 +465,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SubROVControls/Preview Content\"";
-				DEVELOPMENT_TEAM = B7ZFP4T9F9;
+				DEVELOPMENT_TEAM = G68QB4QYA6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow to interact with Bluetooth devices";
@@ -480,7 +480,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ucd.SubROVControls2;
+				PRODUCT_BUNDLE_IDENTIFIER = ucd.SubROVControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

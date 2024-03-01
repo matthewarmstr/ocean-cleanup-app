@@ -4,8 +4,6 @@
 //
 //  Created by Matthew Armstrong on 2/23/24.
 //
-// https://youtu.be/n-f0BwxKSD0
-// https://medium.com/@bhumitapanara/ble-bluetooth-low-energy-with-ios-swift-7ef0de0dff78
 
 import SwiftUI
 import CoreBluetooth
@@ -100,12 +98,26 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
 
 struct ContentView: View {
     @ObservedObject private var bluetoothModel = BluetoothModel()
+    @GestureState private var isDetectingLongPress = false
+    @State private var completedLongPress = false
+    
+    var longPress: some Gesture {
+        LongPressGesture(minimumDuration: 0.5)
+            .updating($isDetectingLongPress) { currentState, gestureState,
+                transaction in gestureState = currentState
+                transaction.animation = Animation.easeIn(duration: 0.5)
+            }
+            .onEnded {
+                finished in self.completedLongPress = finished
+            }
+    }
     
     var body: some View {
         ZStack {
             LinearGradient(colors: [.black, .black],
                            startPoint: .topLeading,
-                           endPoint: .bottomTrailing)       .edgesIgnoringSafeArea(.all)
+                           endPoint: .bottomTrailing)       
+                                        .edgesIgnoringSafeArea(.all)
             VStack {
                 // Forward Button
                 Button {
@@ -125,6 +137,13 @@ struct ContentView: View {
                 .tint(Color(red: 98/255, green: 255/255, blue: 152/255))
                 .padding([.bottom, .trailing, .top], 50)
                 .rotationEffect(.degrees(90))
+                .gesture(longPress)
+                .onLongPressGesture(minimumDuration: 0.5,
+                                    maximumDistance: 2.0) {
+                    action1()
+                } onPressingChanged: { Bool in
+                    action1()
+                }
                 
                 HStack {
                     VStack {
@@ -146,6 +165,13 @@ struct ContentView: View {
                         .padding(.trailing, 100)
                         .tint(Color(red: 237/255, green: 51/255, blue: 78/255))
                         .rotationEffect(.degrees(90))
+                        .gesture(longPress)
+                        .onLongPressGesture(minimumDuration: 0.1,
+                                            maximumDistance: 0.1) {
+                            action1()
+                        } onPressingChanged: { Bool in
+                            action1()
+                        }
 
                         // Right button
                         Button {
@@ -164,6 +190,13 @@ struct ContentView: View {
                         .buttonBorderShape(.roundedRectangle)
                         .tint(Color(red: 237/255, green: 51/255, blue: 78/255))
                         .rotationEffect(.degrees(90))
+                        .gesture(longPress)
+                        .onLongPressGesture(minimumDuration: 0.1,
+                                            maximumDistance: 2.0) {
+                            action1()
+                        } onPressingChanged: { Bool in
+                            action1()
+                        }
 
                     }
                     .padding([.top], 50)
@@ -198,6 +231,10 @@ struct ContentView: View {
         }
     }
     
+}
+
+func action1() -> Void{
+    print("hi")
 }
 
 #Preview {
