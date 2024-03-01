@@ -53,6 +53,14 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
         peripheral.discoverServices(nil)
     }
     
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)? ) {
+        print("device disconnected")
+        guard let connected_peripheral = connected_device else {
+            return
+        }
+        self.centralManager?.cancelPeripheralConnection(connected_peripheral)
+        self.centralManager?.scanForPeripherals(withServices: nil)
+    }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         guard let services = peripheral.services else {
@@ -84,6 +92,8 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
         connected_device?.writeValue(hexData, for: writeCharacteristic, type: .withResponse)
     }
+    
+    
 }
 
 
