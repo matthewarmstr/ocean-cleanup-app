@@ -120,7 +120,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(colors: [.black, .black],
+            LinearGradient(colors: [Color(red: 246/255, green: 215/255, blue: 176/255), .cyan],
                            startPoint: .topLeading,
                            endPoint: .bottomTrailing)       
                                         .edgesIgnoringSafeArea(.all)
@@ -130,7 +130,7 @@ struct ContentView: View {
                     print("Action to move forward here")
                 } label: {
                     Text("FORWARD")
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
                         .frame(width: 200, height: 200)
                         .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
@@ -140,7 +140,7 @@ struct ContentView: View {
                 .controlSize(.large)
                 .buttonBorderShape(.capsule)
                 .tint(Color(red: 98/255, green: 255/255, blue: 152/255))
-                .padding([.bottom, .trailing, .top], 50)
+                .padding([.bottom, .trailing, .top], -15)
                 .rotationEffect(.degrees(90))
                 .gesture(longPress)
                 .onLongPressGesture(minimumDuration: 0.5,
@@ -151,6 +151,44 @@ struct ContentView: View {
                 }
                 
                 HStack {
+                    // Reverse Button
+                    Button {
+                        print("REVERSE REVERSE!! CRISS CROSS")
+                        bluetoothModel.writeHex(data: 1)
+                    } label: {
+                        Image(systemName: "arrow.uturn.backward")
+                            .foregroundColor(.white)
+                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+                            .frame(width: 90, height: 90)
+                            .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                            .font(.title)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                    .buttonBorderShape(.capsule)
+                    .tint(Color(red: 250/255, green: 100/255, blue: 100/255))
+                    .padding([.bottom], 0)
+                    .rotationEffect(.degrees(0))
+                    .gesture(longPress)
+                    .onLongPressGesture(minimumDuration: 0.5,
+                                        maximumDistance: 2.0) {
+                        action1()
+                    } onPressingChanged: { Bool in
+                        action1()
+                    }
+                    
+                    //Revers counter image
+                    Image(systemName: "arrow.uturn.backward")
+                        .foregroundColor(.clear)
+                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+                        .frame(width: 75, height: 75)
+                        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                        .font(.title)
+                        .padding(EdgeInsets(top: 0, leading: 100, bottom: 0, trailing: 0))
+                }
+                Spacer().frame(height:50)
+                
+                HStack {
                     VStack {
                         // Left button
                         Button {
@@ -159,7 +197,7 @@ struct ContentView: View {
                             Image(systemName: "arrowshape.left.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.white)
                                 .frame(width: 75, height: 75)
                                 .clipShape(Rectangle())
                         }
@@ -167,7 +205,7 @@ struct ContentView: View {
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.roundedRectangle)
                         .padding(.trailing, 100)
-                        .tint(Color(red: 237/255, green: 51/255, blue: 78/255))
+                        .tint(Color(red: 100/255, green: 100/255, blue: 230/255))
                         .rotationEffect(.degrees(90))
                         .gesture(longPress)
                         .onLongPressGesture(minimumDuration: 0.1,
@@ -184,14 +222,14 @@ struct ContentView: View {
                             Image(systemName: "arrowshape.right.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.white)
                                 .frame(width: 75, height: 75)
                                 .clipShape(Rectangle())
                         }
                         .controlSize(.large)
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.roundedRectangle)
-                        .tint(Color(red: 237/255, green: 51/255, blue: 78/255))
+                        .tint(Color(red: 100/255, green: 100/255, blue: 230/255))
                         .rotationEffect(.degrees(90))
                         .gesture(longPress)
                         .onLongPressGesture(minimumDuration: 0.1,
@@ -211,7 +249,7 @@ struct ContentView: View {
                         Image(systemName: "trash.circle.fill")
                             .resizable()
                             .scaledToFit()
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .frame(width: 100, height: 100)
                             .clipShape(Circle())
@@ -220,7 +258,7 @@ struct ContentView: View {
                     .buttonStyle(.borderedProminent)
                     .buttonBorderShape(.roundedRectangle)
                     .padding([.top], 75)
-                    .tint(Color(red: 92/255, green: 189/255, blue: 235/255))
+                    .tint(Color(red: 100/255, green: 100/255, blue: 235/255))
                     .rotationEffect(.degrees(90))
                     .gesture(longPress)
                     .onLongPressGesture(minimumDuration: 0) {
@@ -231,21 +269,13 @@ struct ContentView: View {
                         }
                     }
                 }
-                // Display Bluetooth devices
-//                List(bluetoothViewModel.peripheralNames, id: \.self) { peripheral in
-//                    Text(peripheral)
-//                }
-//                .navigationTitle("Peripherals")
             }
-
         }
     }
-    
     func updateAndSendNewControls(bit: UInt8) -> Void {
         controlBits = controlBits ^ bit
         bluetoothModel.writeHex(data: controlBits)
     }
-    
 }
 
 #Preview {
