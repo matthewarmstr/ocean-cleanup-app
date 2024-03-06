@@ -8,7 +8,13 @@
 import SwiftUI
 import CoreBluetooth
 
-let UUIDdevice = UUID(uuidString:"A6DCBC6F-0021-6BO9-10C1-BDA4S6CV8N68")
+var controlBits: UInt8 = 0
+
+let LEFT_BINARY: UInt8 = 0b00000001
+let RIGHT_BINARY: UInt8 = 0b00000010
+let TRASH_BINARY: UInt8 = 0b00000100
+let FORWARD_BINARY: UInt8 = 0b00001000
+let REVERSE_BINARY: UInt8 = 0b00010000
 
 class BluetoothModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager?
@@ -81,7 +87,7 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
         characteristicToWriteTo = characteristics[0];
     }
     
-    func writeHex(data: Int) {
+    func writeHex(data: UInt8) {
         var intData = data
         let hexData = Data(bytes: &intData,
                            count: MemoryLayout.size(ofValue: intData))
@@ -122,7 +128,6 @@ struct ContentView: View {
                 // Forward Button
                 Button {
                     print("Action to move forward here")
-                    bluetoothModel.writeHex(data: 1)
                 } label: {
                     Text("FORWARD")
                         .foregroundColor(.white)
@@ -140,9 +145,9 @@ struct ContentView: View {
                 .gesture(longPress)
                 .onLongPressGesture(minimumDuration: 0.5,
                                     maximumDistance: 2.0) {
-                    action1()
+                    updateAndSendNewControls(bit: FORWARD_BINARY)
                 } onPressingChanged: { Bool in
-                    action1()
+                    updateAndSendNewControls(bit: FORWARD_BINARY)
                 }
                 
                 HStack {
@@ -188,7 +193,6 @@ struct ContentView: View {
                         // Left button
                         Button {
                             print("Action to move left here")
-                            bluetoothModel.writeHex(data: 2)
                         } label: {
                             Image(systemName: "arrowshape.left.fill")
                                 .resizable()
@@ -206,15 +210,14 @@ struct ContentView: View {
                         .gesture(longPress)
                         .onLongPressGesture(minimumDuration: 0.1,
                                             maximumDistance: 0.1) {
-                            action1()
+                            updateAndSendNewControls(bit: LEFT_BINARY)
                         } onPressingChanged: { Bool in
-                            action1()
+                            updateAndSendNewControls(bit: LEFT_BINARY)
                         }
 
                         // Right button
                         Button {
                             print("Action to move right here")
-                            bluetoothModel.writeHex(data: 3)
                         } label: {
                             Image(systemName: "arrowshape.right.fill")
                                 .resizable()
@@ -231,9 +234,9 @@ struct ContentView: View {
                         .gesture(longPress)
                         .onLongPressGesture(minimumDuration: 0.1,
                                             maximumDistance: 2.0) {
-                            action1()
+                            updateAndSendNewControls(bit: RIGHT_BINARY)
                         } onPressingChanged: { Bool in
-                            action1()
+                            updateAndSendNewControls(bit: RIGHT_BINARY)
                         }
 
                     }
@@ -242,7 +245,6 @@ struct ContentView: View {
                     // Trash Collector Button
                     Button {
                         print("Activate Trash Collector")
-                        bluetoothModel.writeHex(data: 4)
                     } label: {
                         Image(systemName: "trash.circle.fill")
                             .resizable()
@@ -258,14 +260,22 @@ struct ContentView: View {
                     .padding([.top], 75)
                     .tint(Color(red: 100/255, green: 100/255, blue: 235/255))
                     .rotationEffect(.degrees(90))
+                    .gesture(longPress)
+                    .onLongPressGesture(minimumDuration: 0) {
+                    } onPressingChanged: { PressDown in
+                        if PressDown {
+                            updateAndSendNewControls(bit: TRASH_BINARY)
+                            controlBits = controlBits ^ TRASH_BINARY
+                        }
+                    }
                 }
             }
         }
     }
-}
-
-func action1() -> Void{
-    print("hi")
+    func updateAndSendNewControls(bit: UInt8) -> Void {
+        controlBits = controlBits ^ bit
+        bluetoothModel.writeHex(data: controlBits)
+    }
 }
 
 #Preview {
