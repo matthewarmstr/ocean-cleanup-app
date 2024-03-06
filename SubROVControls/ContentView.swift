@@ -120,7 +120,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color(red: 246/255, green: 215/255, blue: 176/255), .cyan],
+            LinearGradient(colors: [Color.black],
                            startPoint: .topLeading,
                            endPoint: .bottomTrailing)       
                                         .edgesIgnoringSafeArea(.all)
@@ -130,7 +130,7 @@ struct ContentView: View {
                     print("Action to move forward here")
                 } label: {
                     Text("FORWARD")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
                         .frame(width: 200, height: 200)
                         .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
@@ -140,7 +140,7 @@ struct ContentView: View {
                 .controlSize(.large)
                 .buttonBorderShape(.capsule)
                 .tint(Color(red: 98/255, green: 255/255, blue: 152/255))
-                .padding([.bottom, .trailing, .top], -15)
+//                .padding([.bottom, .trailing, .top], -15)
                 .rotationEffect(.degrees(90))
                 .gesture(longPress)
                 .onLongPressGesture(minimumDuration: 0.5,
@@ -154,7 +154,6 @@ struct ContentView: View {
                     // Reverse Button
                     Button {
                         print("REVERSE REVERSE!! CRISS CROSS")
-                        bluetoothModel.writeHex(data: 1)
                     } label: {
                         Image(systemName: "arrow.uturn.backward")
                             .foregroundColor(.white)
@@ -172,9 +171,9 @@ struct ContentView: View {
                     .gesture(longPress)
                     .onLongPressGesture(minimumDuration: 0.5,
                                         maximumDistance: 2.0) {
-                        action1()
+                        updateAndSendNewControls(bit: REVERSE_BINARY)
                     } onPressingChanged: { Bool in
-                        action1()
+                        updateAndSendNewControls(bit: REVERSE_BINARY)
                     }
                     
                     //Revers counter image
@@ -197,7 +196,7 @@ struct ContentView: View {
                             Image(systemName: "arrowshape.left.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.black)
                                 .frame(width: 75, height: 75)
                                 .clipShape(Rectangle())
                         }
@@ -205,7 +204,7 @@ struct ContentView: View {
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.roundedRectangle)
                         .padding(.trailing, 100)
-                        .tint(Color(red: 100/255, green: 100/255, blue: 230/255))
+                        .tint(Color(red: 150/255, green: 150/255, blue: 230/255))
                         .rotationEffect(.degrees(90))
                         .gesture(longPress)
                         .onLongPressGesture(minimumDuration: 0.1,
@@ -222,14 +221,14 @@ struct ContentView: View {
                             Image(systemName: "arrowshape.right.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.black)
                                 .frame(width: 75, height: 75)
                                 .clipShape(Rectangle())
                         }
                         .controlSize(.large)
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.roundedRectangle)
-                        .tint(Color(red: 100/255, green: 100/255, blue: 230/255))
+                        .tint(Color(red: 150/255, green: 150/255, blue: 230/255))
                         .rotationEffect(.degrees(90))
                         .gesture(longPress)
                         .onLongPressGesture(minimumDuration: 0.1,
@@ -249,7 +248,7 @@ struct ContentView: View {
                         Image(systemName: "trash.circle.fill")
                             .resizable()
                             .scaledToFit()
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.black)
                             .frame(maxWidth: .infinity)
                             .frame(width: 100, height: 100)
                             .clipShape(Circle())
@@ -258,7 +257,7 @@ struct ContentView: View {
                     .buttonStyle(.borderedProminent)
                     .buttonBorderShape(.roundedRectangle)
                     .padding([.top], 75)
-                    .tint(Color(red: 100/255, green: 100/255, blue: 235/255))
+                    .tint(Color(red: 92/255, green: 189/255, blue: 235/255))
                     .rotationEffect(.degrees(90))
                     .gesture(longPress)
                     .onLongPressGesture(minimumDuration: 0) {
