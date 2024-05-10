@@ -20,7 +20,7 @@ class BluetoothModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager?
     private var connected_device: CBPeripheral?
     private var peripherals: [CBPeripheral] = []
-    private var characteristicToWriteTo: CBCharacteristic?
+    private var characteristicToSendControlsTo: CBCharacteristic?
     @Published var peripheralNames: [String] = []
     
     override init() {
@@ -81,20 +81,56 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
         guard let characteristics = service.characteristics else {
             return
         }
+        
         for characteristic in characteristics {
             print("discovered characteristic \(String(describing: characteristic))")
+            
+            // Assign characteristics for sending/receiving data
+            if (characteristic.properties.rawValue == 0x8) {
+                characteristicToSendControlsTo = characteristic
+                print("ASSIGNED WRITE CHARACTERISTIC")
+            } else if (characteristic.properties.rawValue == 0x12) {
+                print("ASSIGNED READ CHARACTERISTIC")
+                peripheral.setNotifyValue(true, for: characteristic)
+            }
         }
-        characteristicToWriteTo = characteristics[0];
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        print("Updated notification state for \(String(describing: characteristic))")
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        guard characteristic.value != nil else {
+            return
+        }
+        print("Updated characteristic \(String(describing: characteristic))")
     }
     
     func writeHex(data: UInt8) {
         var intData = data
         let hexData = Data(bytes: &intData,
                            count: MemoryLayout.size(ofValue: intData))
-        guard let writeCharacteristic = characteristicToWriteTo else {
+        guard let writeCharacteristic = characteristicToSendControlsTo else {
             return
         }
         connected_device?.writeValue(hexData, for: writeCharacteristic, type: .withResponse)
+    }
+    
+    func getUltrasonicPulse() -> UInt16 {
+//        guard let readCharacteristic = characteristicToGetDataFrom else {
+//            return 0
+//        }
+//        
+//        // Read value
+//        connected_device?.readValue(for: readCharacteristic)
+//        guard let newValue = readCharacteristic.value else {
+//            return 0
+//        }
+//        
+//        // Convert to UInt8 and return
+//        return [UInt8](newValue)[0]
+        return 0;
     }
     
     
@@ -125,6 +161,8 @@ struct ContentView: View {
                            endPoint: .bottomTrailing)       
                                         .edgesIgnoringSafeArea(.all)
             VStack {
+//                Text("Ultrasonic: \(getUltrasonicData())").foregroundStyle(.white)
+                
                 // Forward Button
                 Button {
                     print("Action to move forward here")
@@ -274,6 +312,10 @@ struct ContentView: View {
     func updateAndSendNewControls(bit: UInt8) -> Void {
         controlBits = controlBits ^ bit
         bluetoothModel.writeHex(data: controlBits)
+    }
+    
+    func getUltrasonicData() -> UInt16 {
+        return bluetoothModel.getUltrasonicPulse()
     }
 }
 
