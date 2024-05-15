@@ -1,11 +1,12 @@
 //
 //  ContentView.swift
-//  SubROVControls
+//  OceanCleanupControls
 //
 //  Created by Matthew Armstrong on 2/23/24.
 //
 
 import SwiftUI
+import UIKit
 import CoreBluetooth
 
 var controlBits: UInt8 = 0
@@ -16,12 +17,25 @@ let TRASH_BINARY: UInt8 = 0b00000100
 let FORWARD_BINARY: UInt8 = 0b00001000
 let REVERSE_BINARY: UInt8 = 0b00010000
 
+let ULTRASONIC_UUID: String = "48081061-A096-451D-983F-BABFABA3E394"
+let LATITUDE_UUID: String = "41B976E3-11BC-4FAF-BF36-53A3F9459108"
+let LONGITUDE_UUID: String = "41B976E3-11BC-4FAF-BF36-53A3F9459108"
+
 class BluetoothModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager?
     private var connected_device: CBPeripheral?
     private var peripherals: [CBPeripheral] = []
     private var characteristicToSendControlsTo: CBCharacteristic?
+    
     @Published var peripheralNames: [String] = []
+    
+    private var ultrasonicCharacteristic: CBCharacteristic?
+    @Published var ultrasonicDistance: Float32 = 0
+    private var longitudeCharacteristic: CBCharacteristic?
+    @Published var longitude: Float32 = 0
+    private var latitudeCharacteristic: CBCharacteristic?
+    @Published var latitude: Float32 = 0
+    
     
     override init() {
         super.init()
@@ -89,10 +103,16 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
             if (characteristic.properties.rawValue == 0x8) {
                 characteristicToSendControlsTo = characteristic
                 print("ASSIGNED WRITE CHARACTERISTIC")
-            } else if (characteristic.properties.rawValue == 0x12) {
-                print("ASSIGNED READ CHARACTERISTIC")
-                peripheral.setNotifyValue(true, for: characteristic)
+            } else if (characteristic.uuid.uuidString == ULTRASONIC_UUID) {
+                ultrasonicCharacteristic = characteristic
+            } else if (characteristic.uuid.uuidString == LONGITUDE_UUID) {
+                longitudeCharacteristic = characteristic
+            } else if (characteristic.uuid.uuidString == LATITUDE_UUID) {
+                latitudeCharacteristic = characteristic
             }
+                //print("ASSIGNED READ CHARACTERISTIC")
+            peripheral.setNotifyValue(true, for: characteristic)
+            
         }
     }
     
@@ -104,7 +124,31 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
         guard characteristic.value != nil else {
             return
         }
-        print("Updated characteristic \(String(describing: characteristic))")
+        if (characteristic.uuid.uuidString == ULTRASONIC_UUID) {
+            guard let newValue = characteristic.value else {
+                return
+            }
+            let bytes :[UInt8] = [newValue[0], newValue[1]]
+            let data = NSData(bytes: bytes, length: 2)
+            var distance : UInt16 = 0; data.getBytes(&distance, length:2)
+            ultrasonicDistance = Float32(distance) / 148
+        } else if (characteristic.uuid.uuidString == LATITUDE_UUID) {
+            guard let newValue = characteristic.value else {
+                return
+            }
+            let bytes :[UInt8] = [newValue[0], newValue[1], newValue[2], newValue[3]]
+            let data = NSData(bytes: bytes, length: 4)
+            var latitudeDummy : UInt16 = 0; data.getBytes(&latitudeDummy, length:2)
+            latitude = Float32(latitudeDummy)
+        } else if (characteristic.uuid.uuidString == LONGITUDE_UUID) {
+            guard let newValue = characteristic.value else {
+                return
+            }
+            let bytes :[UInt8] = [newValue[0], newValue[1], newValue[2], newValue[3]]
+            let data = NSData(bytes: bytes, length: 4)
+            var longitudeDummy : UInt16 = 0; data.getBytes(&longitudeDummy, length:2)
+            longitude = Float32(longitudeDummy)
+        }
     }
     
     func writeHex(data: UInt8) {
@@ -116,24 +160,6 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
         connected_device?.writeValue(hexData, for: writeCharacteristic, type: .withResponse)
     }
-    
-    func getUltrasonicPulse() -> UInt16 {
-//        guard let readCharacteristic = characteristicToGetDataFrom else {
-//            return 0
-//        }
-//        
-//        // Read value
-//        connected_device?.readValue(for: readCharacteristic)
-//        guard let newValue = readCharacteristic.value else {
-//            return 0
-//        }
-//        
-//        // Convert to UInt8 and return
-//        return [UInt8](newValue)[0]
-        return 0;
-    }
-    
-    
 }
 
 
@@ -143,6 +169,7 @@ struct ContentView: View {
     @GestureState private var isDetectingLongPress = false
     @State private var completedLongPress = false
     
+
     var longPress: some Gesture {
         LongPressGesture(minimumDuration: 0.5)
             .updating($isDetectingLongPress) { currentState, gestureState,
@@ -155,6 +182,7 @@ struct ContentView: View {
     }
     
     var body: some View {
+        
         ZStack {
             LinearGradient(colors: [Color.black],
                            startPoint: .topLeading,
@@ -164,6 +192,20 @@ struct ContentView: View {
 //                Text("Ultrasonic: \(getUltrasonicData())").foregroundStyle(.white)
                 
                 // Forward Button
+                VStack{
+                    HStack {
+                        Text("Ultrasonic distance: \(bluetoothModel.ultrasonicDistance, specifier: "%.2f") in.").foregroundColor(.white)
+                    }
+                    HStack {
+                        Text("Latitude:  \(bluetoothModel.latitude, specifier: "%.2f")").foregroundColor(.white)
+                    }
+                    HStack {
+                        Text("Longitude: \(bluetoothModel.longitude, specifier: "%.2f")").foregroundColor(.white)
+                    }
+                }
+
+//                Text("Ultrasonic Distance: \(bluetoothModel.ultraSonicDistance)").foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                
                 Button {
                     print("Action to move forward here")
                 } label: {
@@ -189,47 +231,10 @@ struct ContentView: View {
                 }
                 
                 HStack {
-                    // Reverse Button
-                    Button {
-                        print("REVERSE REVERSE!! CRISS CROSS")
-                    } label: {
-                        Image(systemName: "arrow.uturn.backward")
-                            .foregroundColor(.white)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                            .frame(width: 90, height: 90)
-                            .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-                            .font(.title)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.small)
-                    .buttonBorderShape(.capsule)
-                    .tint(Color(red: 250/255, green: 100/255, blue: 100/255))
-                    .padding([.bottom], 0)
-                    .rotationEffect(.degrees(0))
-                    .gesture(longPress)
-                    .onLongPressGesture(minimumDuration: 0.5,
-                                        maximumDistance: 2.0) {
-                        updateAndSendNewControls(bit: REVERSE_BINARY)
-                    } onPressingChanged: { Bool in
-                        updateAndSendNewControls(bit: REVERSE_BINARY)
-                    }
-                    
-                    //Revers counter image
-                    Image(systemName: "arrow.uturn.backward")
-                        .foregroundColor(.clear)
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                        .frame(width: 75, height: 75)
-                        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-                        .font(.title)
-                        .padding(EdgeInsets(top: 0, leading: 100, bottom: 0, trailing: 0))
-                }
-                Spacer().frame(height:50)
-                
-                HStack {
                     VStack {
                         // Left button
                         Button {
-                            print("Action to move left here")
+                            print("Rudder turn left")
                         } label: {
                             Image(systemName: "arrowshape.left.fill")
                                 .resizable()
@@ -251,10 +256,9 @@ struct ContentView: View {
                         } onPressingChanged: { Bool in
                             updateAndSendNewControls(bit: LEFT_BINARY)
                         }
-
                         // Right button
                         Button {
-                            print("Action to move right here")
+                            print("Rudder turn right")
                         } label: {
                             Image(systemName: "arrowshape.right.fill")
                                 .resizable()
@@ -313,12 +317,8 @@ struct ContentView: View {
         controlBits = controlBits ^ bit
         bluetoothModel.writeHex(data: controlBits)
     }
-    
-    func getUltrasonicData() -> UInt16 {
-        return bluetoothModel.getUltrasonicPulse()
-    }
 }
 
 #Preview {
-    ContentView()
+    ContentView().previewInterfaceOrientation(.landscapeLeft)
 }
