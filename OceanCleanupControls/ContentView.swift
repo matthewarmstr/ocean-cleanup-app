@@ -18,8 +18,8 @@ let FORWARD_BINARY: UInt8 = 0b00001000
 let REVERSE_BINARY: UInt8 = 0b00010000
 
 let ULTRASONIC_UUID: String = "48081061-A096-451D-983F-BABFABA3E394"
-let LATITUDE_UUID: String = "41B976E3-11BC-4FAF-BF36-53A3F9459108"
-let LONGITUDE_UUID: String = "41B976E3-11BC-4FAF-BF36-53A3F9459108"
+let LATITUDE_UUID: String = "5B7F4D5B-63AD-42EB-8074-FA3550CC44F8"
+let LONGITUDE_UUID: String = "B36AC37E-2DC5-4B2D-8080-C9BBE38A54C1"
 
 class BluetoothModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager?
@@ -105,14 +105,15 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
                 print("ASSIGNED WRITE CHARACTERISTIC")
             } else if (characteristic.uuid.uuidString == ULTRASONIC_UUID) {
                 ultrasonicCharacteristic = characteristic
+                peripheral.setNotifyValue(true, for: characteristic)
+                peripheral.setNotifyValue(true, for: characteristic)
             } else if (characteristic.uuid.uuidString == LONGITUDE_UUID) {
                 longitudeCharacteristic = characteristic
+                peripheral.setNotifyValue(true, for: characteristic)
             } else if (characteristic.uuid.uuidString == LATITUDE_UUID) {
                 latitudeCharacteristic = characteristic
+                peripheral.setNotifyValue(true, for: characteristic)
             }
-                //print("ASSIGNED READ CHARACTERISTIC")
-            peripheral.setNotifyValue(true, for: characteristic)
-            
         }
     }
     
@@ -130,24 +131,25 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
             }
             let bytes :[UInt8] = [newValue[0], newValue[1]]
             let data = NSData(bytes: bytes, length: 2)
-            var distance : UInt16 = 0; data.getBytes(&distance, length:2)
-            ultrasonicDistance = Float32(distance) / 148
+            var pulseWidth : UInt16 = 0; data.getBytes(&pulseWidth, length:2)
+            ultrasonicDistance = Float32(pulseWidth) / 148
+            print("Pulse width: \(pulseWidth)")
         } else if (characteristic.uuid.uuidString == LATITUDE_UUID) {
             guard let newValue = characteristic.value else {
                 return
             }
             let bytes :[UInt8] = [newValue[0], newValue[1], newValue[2], newValue[3]]
             let data = NSData(bytes: bytes, length: 4)
-            var latitudeDummy : UInt16 = 0; data.getBytes(&latitudeDummy, length:2)
-            latitude = Float32(latitudeDummy)
+            data.getBytes(&latitude, length:4)
+            print("New latitude value: \(latitude)")
         } else if (characteristic.uuid.uuidString == LONGITUDE_UUID) {
             guard let newValue = characteristic.value else {
                 return
             }
             let bytes :[UInt8] = [newValue[0], newValue[1], newValue[2], newValue[3]]
             let data = NSData(bytes: bytes, length: 4)
-            var longitudeDummy : UInt16 = 0; data.getBytes(&longitudeDummy, length:2)
-            longitude = Float32(longitudeDummy)
+            data.getBytes(&longitude, length:4)
+            print("New longitude value: \(longitude)")
         }
     }
     
@@ -189,22 +191,18 @@ struct ContentView: View {
                            endPoint: .bottomTrailing)       
                                         .edgesIgnoringSafeArea(.all)
             VStack {
-//                Text("Ultrasonic: \(getUltrasonicData())").foregroundStyle(.white)
-                
                 // Forward Button
                 VStack{
                     HStack {
                         Text("Ultrasonic distance: \(bluetoothModel.ultrasonicDistance, specifier: "%.2f") in.").foregroundColor(.white)
                     }
                     HStack {
-                        Text("Latitude:  \(bluetoothModel.latitude, specifier: "%.2f")").foregroundColor(.white)
+                        Text("Latitude:  \(bluetoothModel.latitude, specifier: "%.5f")").foregroundColor(.white)
                     }
                     HStack {
-                        Text("Longitude: \(bluetoothModel.longitude, specifier: "%.2f")").foregroundColor(.white)
+                        Text("Longitude: \(bluetoothModel.longitude, specifier: "%.5f")").foregroundColor(.white)
                     }
                 }
-
-//                Text("Ultrasonic Distance: \(bluetoothModel.ultraSonicDistance)").foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
                 
                 Button {
                     print("Action to move forward here")
