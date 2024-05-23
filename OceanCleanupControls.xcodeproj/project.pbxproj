@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E64662C12BFFEC8B00E8AC47 /* BluetoothModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64662C02BFFEC8B00E8AC47 /* BluetoothModel.swift */; };
+		E64662C32BFFED1E00E8AC47 /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64662C22BFFED1E00E8AC47 /* Peripheral.swift */; };
 		EC846B0E2BEDDBEF00D4A430 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC846B0D2BEDDBEF00D4A430 /* ContentView.swift */; };
 		EC846B112BEDDC3D00D4A430 /* Preview Content in Resources */ = {isa = PBXBuildFile; fileRef = EC846B0F2BEDDC3D00D4A430 /* Preview Content */; };
 		EC846B122BEDDC3D00D4A430 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC846B102BEDDC3D00D4A430 /* Assets.xcassets */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E64662C02BFFEC8B00E8AC47 /* BluetoothModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BluetoothModel.swift; path = "../../../Desktop/Ocean Cleanup TO MERGE/BluetoothModel.swift"; sourceTree = "<group>"; };
+		E64662C22BFFED1E00E8AC47 /* Peripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Peripheral.swift; path = "../../../Desktop/Ocean Cleanup TO MERGE/Peripheral.swift"; sourceTree = "<group>"; };
 		EC846B0D2BEDDBEF00D4A430 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EC846B0F2BEDDC3D00D4A430 /* Preview Content */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Preview Content"; path = "Ocean Cleanup Controls/Preview Content"; sourceTree = SOURCE_ROOT; };
 		EC846B102BEDDC3D00D4A430 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "Ocean Cleanup Controls/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
@@ -57,6 +61,8 @@
 			children = (
 				EC8E21342BEDDD73002DD232 /* OceanCleanupControlsApp.swift */,
 				EC846B0D2BEDDBEF00D4A430 /* ContentView.swift */,
+				E64662C02BFFEC8B00E8AC47 /* BluetoothModel.swift */,
+				E64662C22BFFED1E00E8AC47 /* Peripheral.swift */,
 				EC846B102BEDDC3D00D4A430 /* Assets.xcassets */,
 				EC846B0F2BEDDC3D00D4A430 /* Preview Content */,
 			);
@@ -143,6 +149,8 @@
 			files = (
 				EC846B0E2BEDDBEF00D4A430 /* ContentView.swift in Sources */,
 				EC8E21352BEDDD73002DD232 /* OceanCleanupControlsApp.swift in Sources */,
+				E64662C12BFFEC8B00E8AC47 /* BluetoothModel.swift in Sources */,
+				E64662C32BFFED1E00E8AC47 /* Peripheral.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +284,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OceanCleanupControls/Preview Content\"";
-				DEVELOPMENT_TEAM = G68QB4QYA6;
+				DEVELOPMENT_TEAM = B7ZFP4T9F9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow to interact with Bluetooth devices";
@@ -284,7 +292,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -306,7 +314,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OceanCleanupControls/Preview Content\"";
-				DEVELOPMENT_TEAM = G68QB4QYA6;
+				DEVELOPMENT_TEAM = B7ZFP4T9F9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow to interact with Bluetooth devices";
@@ -314,7 +322,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
