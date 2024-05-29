@@ -7,10 +7,9 @@
 
 import SwiftUI
 import UIKit
-
+var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 struct ContentView: View {
     @ObservedObject private var bluetoothModel = BluetoothModel()
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         NavigationStack {
@@ -25,11 +24,15 @@ struct ContentView: View {
                         .font(.system(size: 18, weight: .light, design: .serif))
                 }.onReceive(timer) { time in
                     for (name, timestamp) in bluetoothModel.peripheralTimestamps {
-                        var last_timestamp = timestamp
-                        var current_timestamp = Date()
-                        last_timestamp = last_timestamp.addingTimeInterval(2)
+                        var peripheral_timestamp = timestamp
+                        let current_timestamp = Date()
+                        peripheral_timestamp = peripheral_timestamp.addingTimeInterval(2)
+                        print("Current Timestamp:")
+                        print(current_timestamp)
+                        print("peripheral_timestamp:")
+                        print(peripheral_timestamp)
                         
-                        if (last_timestamp < current_timestamp) {
+                        if (peripheral_timestamp < current_timestamp) {
                             bluetoothModel.peripheralNames = bluetoothModel.peripheralNames.filter { $0 != name }
                         }
                     }
