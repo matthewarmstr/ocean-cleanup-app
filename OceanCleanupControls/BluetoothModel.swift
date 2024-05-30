@@ -13,7 +13,6 @@ let ULTRASONIC_UUID: String = "48081061-A096-451D-983F-BABFABA3E394"
 let LATITUDE_UUID: String = "5B7F4D5B-63AD-42EB-8074-FA3550CC44F8"
 let LONGITUDE_UUID: String = "B36AC37E-2DC5-4B2D-8080-C9BBE38A54C1"
 let SERVICE_UUID: [CBUUID]? = [CBUUID(string : "AE702E79-39EB-4993-B8DF-BE1718623C82")]
-let HEADING_UUID: String = "59EDD414-7B19-417D-8264-C49F3C7E9929"
 
 class BluetoothModel: NSObject, ObservableObject {
     //Bluetooth Model objects
@@ -35,8 +34,6 @@ class BluetoothModel: NSObject, ObservableObject {
     @Published var longitude: Float32 = 38.547012136671114
     private var latitudeCharacteristic: CBCharacteristic?
     @Published var latitude: Float32 = -121.76641854885486
-    private var headingCharacteristic: CBCharacteristic?
-    @Published var heading: Float32 = 0
     
     var scan_options = [CBCentralManagerScanOptionAllowDuplicatesKey: true]
 
@@ -57,26 +54,21 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     //###### CALLED ON PERIPHERAL DISCOVERY
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        let time = Date()
-        //let time_formatting = DateFormatter()
-        //time_formatting.dateFormat = "hh:mm:ss"
-        //let timeString = time_formatting.string(from: time)
-        //print(timeString)
-        
         // if the peripheral does not have a valid name, return
         guard let name = peripheral.name else {
             return
         }
-        
+        let time = Date()
         peripheral.delegate = self
-        if !peripherals.contains(peripheral) {
+        // if it is a peripheral we have never seen before, add it to the list
+        if !peripheralNames.contains(name) {
             // first check if its a valid peripheral
             //peripheral.discoverServices(nil)
             self.peripherals.append(peripheral)
             self.peripheralNames.append(name)
             
             // in the special case that we were disconnected on accident, reconnect immediately
-            print(keepConnectionAlive)
+            //print(keepConnectionAlive)
             if ((keepConnectionAlive == true) && (name == connected_device_name)){
                 print(connected_device_name)
                 centralManager?.stopScan()
@@ -123,16 +115,13 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
             } else if (characteristic.uuid.uuidString == LATITUDE_UUID) {
                 latitudeCharacteristic = characteristic
                 peripheral.setNotifyValue(true, for: characteristic)
-            }   else if (characteristic.uuid.uuidString == HEADING_UUID) {
-                headingCharacteristic = characteristic
-                peripheral.setNotifyValue(true, for: characteristic)
             }
         }
     }
     
     // Triggered when characteristic state updated
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        print("Updated notification state for \(String(describing: characteristic))")
+        //print("Updated notification state for \(String(describing: characteristic))")
     }
     
     // Triggered when Characteristic value is updated
@@ -156,7 +145,7 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
             let bytes :[UInt8] = [newValue[0], newValue[1], newValue[2], newValue[3]]
             let data = NSData(bytes: bytes, length: 4)
             data.getBytes(&latitude, length:4)
-            print("New latitude value: \(latitude)")
+            //print("New latitude value: \(latitude)")
         } else if (characteristic.uuid.uuidString == LONGITUDE_UUID) {
             guard let newValue = characteristic.value else {
                 return
@@ -164,15 +153,7 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
             let bytes :[UInt8] = [newValue[0], newValue[1], newValue[2], newValue[3]]
             let data = NSData(bytes: bytes, length: 4)
             data.getBytes(&longitude, length:4)
-            print("New longitude value: \(longitude)")
-        } else if (characteristic.uuid.uuidString == HEADING_UUID) {
-            guard let newValue = characteristic.value else {
-                return
-            }
-            let bytes :[UInt8] = [newValue[0], newValue[1], newValue[2], newValue[3]]
-            let data = NSData(bytes: bytes, length: 4)
-            data.getBytes(&heading, length:4)
-            //print("New heading value: \(heading)")
+            //print("New longitude value: \(longitude)")
         }
     }
     
@@ -224,7 +205,7 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
 
     //##### CALLED ON PERIPHERAL DISCONNECT
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)? ) {
-        print("device disconnected")
+        //print("device disconnected")
         //Ensure there was a connected device
         guard let connected_peripheral = connected_device else {
             return
@@ -236,7 +217,7 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
             peripherals = []
             peripheralNames = []
             self.centralManager?.cancelPeripheralConnection(connected_peripheral)
-            self.centralManager?.scanForPeripherals(withServices: SERVICE_UUID)
+            self.centralManager?.scanForPeripherals(withServices: SERVICE_UUID, options: scan_options)
             
         // otherwise dont try to reconnect, just scan
         } else {
@@ -245,7 +226,7 @@ extension BluetoothModel: CBCentralManagerDelegate, CBPeripheralDelegate {
             peripherals = []
             peripheralNames = []
             self.centralManager?.cancelPeripheralConnection(connected_peripheral)
-            self.centralManager?.scanForPeripherals(withServices: SERVICE_UUID)
+            self.centralManager?.scanForPeripherals(withServices: SERVICE_UUID, options: scan_options)
         }
     }
     

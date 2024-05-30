@@ -2,7 +2,7 @@
 //  OceanCleanupControlsApp.swift
 //  OceanCleanupControls
 //
-//  Created by Wsfitzge on 4/18/24.
+//  Created by William Fitzgerald on 4/18/24.
 //
 
 import SwiftUI

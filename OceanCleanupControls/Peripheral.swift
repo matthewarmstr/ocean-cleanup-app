@@ -1,8 +1,8 @@
 //
-//  ContentView.swift
+//  Peripheral.swift
 //  SubROVControls
 //
-//  Created by Matthew Armstrong on 2/23/24.
+//  Created by William Fitzgerald on 4/23/24.
 //
 
 import SwiftUI
@@ -13,7 +13,7 @@ import CoreLocation
 //Button code declarations
 
 struct Peripheral: View {
-    @State private var isInches = false
+    @State private var isFeet = false
     @Environment(\.presentationMode) var presentationMode
     var peripheralName: String
     var bluetoothModel: BluetoothModel
@@ -34,8 +34,8 @@ struct Peripheral: View {
         }
     
     func getUltrasonicDistance() -> String {
-        var ultrasonic_distance = bluetoothModel.ultrasonicDistance
-        if (isInches == true) {
+        let ultrasonic_distance = bluetoothModel.ultrasonicDistance
+        if (isFeet == true) {
             return String(format: "%.2f",(ultrasonic_distance * 0.393701)) + " in."
         } else {
             return String(format: "%.2f", ultrasonic_distance) + " cm."
@@ -43,33 +43,31 @@ struct Peripheral: View {
     }
 
     func getGPSDistance() -> String {
-        var peripheralLatitude = bluetoothModel.latitude
-        var peripheralLongitude = bluetoothModel.longitude
-        var peripheralLocation : CLLocation =  CLLocation(latitude: Double(peripheralLatitude), longitude: Double(peripheralLongitude))
-        var phoneLocation = locationManager.lastLocation
+        let peripheralLatitude = bluetoothModel.latitude
+        let peripheralLongitude = bluetoothModel.longitude
+        let peripheralLocation : CLLocation =  CLLocation(latitude: Double(peripheralLatitude), longitude: Double(peripheralLongitude))
+        let phoneLocation = locationManager.lastLocation
 
-        var distance = phoneLocation?.distance(from: peripheralLocation)
-        var distanceMeters = distance ?? 0.0
+        let distance = phoneLocation?.distance(from: peripheralLocation)
+        let distanceMeters = distance ?? 0.0
+        print("GPS distance: \(distanceMeters)")
         
-        if (isInches == true) {
-            return String(format: "%.2f",(distanceMeters * 100)) + " in."
+        if (isFeet == false) {
+            return String(format: "%.2f",(distanceMeters)) + " meters"
         } else {
-            return String(format: "%.2f", distanceMeters * 39) + " cm."
+            return String(format: "%.2f", distanceMeters * 3.281) + " feet"
         }
     }
     
     func get_header_angle() -> Double {
-        var peripheral_latitude = Double(bluetoothModel.latitude)
-        var peripheral_longitude = Double(bluetoothModel.longitude)
-        var phone_location = locationManager.lastLocation
-        var phone_latitude = phone_location?.coordinate.latitude ?? 0
-        var phone_longitude = phone_location?.coordinate.longitude ?? 0
-        print(peripheral_latitude)
-        print(peripheral_longitude)
-        print(phone_latitude)
-        print(phone_longitude)
-        var final_degrees = atan2((peripheral_latitude - phone_latitude), (peripheral_longitude - phone_longitude))
-        print(final_degrees * 180 / Double.pi + 90)
+        let peripheral_latitude = Double(bluetoothModel.latitude)
+        let peripheral_longitude = Double(bluetoothModel.longitude)
+        let phone_location = locationManager.lastLocation
+        let phone_latitude = phone_location?.coordinate.latitude ?? 0
+        let phone_longitude = phone_location?.coordinate.longitude ?? 0
+        print("boat: \(peripheral_latitude), \(peripheral_longitude)")
+        print("phone: \(phone_latitude), \(phone_longitude)")
+        let final_degrees = atan2((peripheral_latitude - phone_latitude), (peripheral_longitude - phone_longitude))
         return -((final_degrees * 180) / Double.pi + 90)
     }
     
@@ -121,9 +119,9 @@ struct Peripheral: View {
                 Image(systemName: "trash.circle.fill") .foregroundColor(.black).font(.title).frame(width: 90, height: 90) }.buttonStyle(.borderedProminent).buttonBorderShape(.roundedRectangle).tint(Color(red: 98/255, green: 200/255, blue: 152/255)).gesture(longPress).onLongPressGesture(minimumDuration: 0.5, maximumDistance: 2.0) { updateAndSendNewControls(bit: TRASH_BINARY) } onPressingChanged: { Bool in updateAndSendNewControls(bit: TRASH_BINARY) }.rotationEffect(.degrees(90)).position(x:100, y:430)
 
             //Toggle Switch
-            Toggle("", isOn: $isInches).buttonStyle(.borderedProminent).toggleStyle(.switch).frame(width: 300, height:300).tint(.gray).rotationEffect(.degrees(90)).position(x:350, y:436)
-            Text("cm.").rotationEffect(.degrees(90)).position(x:350, y:512).font(.system(size: 24))
-            Text("in.").rotationEffect(.degrees(90)).position(x:350, y:610).font(.system(size: 24))
+            Toggle("", isOn: $isFeet).buttonStyle(.borderedProminent).toggleStyle(.switch).frame(width: 300, height:300).tint(.gray).rotationEffect(.degrees(90)).position(x:350, y:436)
+            Text("metric").rotationEffect(.degrees(90)).position(x:350, y:500).font(.system(size: 24))
+            Text("imperial").rotationEffect(.degrees(90)).position(x:350, y:630).font(.system(size: 24))
             //DATA VALUES
             RoundedRectangle(cornerRadius: 20).fill(Color(hue: Double(min(bluetoothModel.ultrasonicDistance/(450),0.3)), saturation: 1, brightness: 1)).frame(width: 180, height: 150).rotationEffect(.degrees(90)).position(x:250, y:465)
             Text("Object ahead in:").rotationEffect(.degrees(90)).position(x:300, y:465).font(.system(size: 24))
@@ -137,8 +135,10 @@ struct Peripheral: View {
             Image(.simpleCompassRose).resizable().frame(width: 100, height: 100).rotationEffect(.degrees(90)).position(x:320, y:310)
             Image(.arrow).resizable().frame(width: 70, height: 25).rotationEffect(.degrees(get_header_angle())).position(x:320, y:311)
         }.onAppear {
+            timer.upstream.connect().cancel()
             bluetoothModel.connectPeripheral(peripheral_name: peripheralName)
         }.onDisappear {
+            timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
             bluetoothModel.disconnectPeripheral()
         }
     }
