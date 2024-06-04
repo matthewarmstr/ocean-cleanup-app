@@ -12,10 +12,10 @@
 		EC10FF882C07A56700C8FBAF /* BluetoothModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC10FF862C07A56700C8FBAF /* BluetoothModel.swift */; };
 		EC10FF892C07A56700C8FBAF /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC10FF872C07A56700C8FBAF /* Peripheral.swift */; };
 		EC846B0E2BEDDBEF00D4A430 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC846B0D2BEDDBEF00D4A430 /* ContentView.swift */; };
-		EC846B112BEDDC3D00D4A430 /* Preview Content in Resources */ = {isa = PBXBuildFile; fileRef = EC846B0F2BEDDC3D00D4A430 /* Preview Content */; };
-		EC846B122BEDDC3D00D4A430 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC846B102BEDDC3D00D4A430 /* Assets.xcassets */; };
 		EC8E21352BEDDD73002DD232 /* OceanCleanupControlsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8E21342BEDDD73002DD232 /* OceanCleanupControlsApp.swift */; };
 		ECE2855E2B8959C600F968E9 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECE2855D2B8959C600F968E9 /* CoreBluetooth.framework */; };
+		ECE4F10D2C0EAB770050E27D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECE4F10B2C0EAB770050E27D /* Assets.xcassets */; };
+		ECE4F10E2C0EAB770050E27D /* Preview Content in Resources */ = {isa = PBXBuildFile; fileRef = ECE4F10C2C0EAB770050E27D /* Preview Content */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,11 +24,11 @@
 		EC10FF862C07A56700C8FBAF /* BluetoothModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothModel.swift; sourceTree = "<group>"; };
 		EC10FF872C07A56700C8FBAF /* Peripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peripheral.swift; sourceTree = "<group>"; };
 		EC846B0D2BEDDBEF00D4A430 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		EC846B0F2BEDDC3D00D4A430 /* Preview Content */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Preview Content"; path = "Ocean Cleanup Controls/Preview Content"; sourceTree = SOURCE_ROOT; };
-		EC846B102BEDDC3D00D4A430 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "Ocean Cleanup Controls/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
 		EC8E21342BEDDD73002DD232 /* OceanCleanupControlsApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OceanCleanupControlsApp.swift; sourceTree = "<group>"; };
 		ECE2852F2B8956F600F968E9 /* OceanCleanupControls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OceanCleanupControls.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECE2855D2B8959C600F968E9 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		ECE4F10B2C0EAB770050E27D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ECE4F10C2C0EAB770050E27D /* Preview Content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Preview Content"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,13 +64,13 @@
 		ECE285312B8956F600F968E9 /* OceanCleanupControls */ = {
 			isa = PBXGroup;
 			children = (
+				ECE4F10B2C0EAB770050E27D /* Assets.xcassets */,
+				ECE4F10C2C0EAB770050E27D /* Preview Content */,
 				EC10FF862C07A56700C8FBAF /* BluetoothModel.swift */,
 				EC10FF872C07A56700C8FBAF /* Peripheral.swift */,
 				EC8E21342BEDDD73002DD232 /* OceanCleanupControlsApp.swift */,
 				EC846B0D2BEDDBEF00D4A430 /* ContentView.swift */,
 				E61120E02C01630B000DC707 /* CoreLocation.swift */,
-				EC846B102BEDDC3D00D4A430 /* Assets.xcassets */,
-				EC846B0F2BEDDC3D00D4A430 /* Preview Content */,
 			);
 			path = OceanCleanupControls;
 			sourceTree = "<group>";
@@ -142,8 +142,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC846B112BEDDC3D00D4A430 /* Preview Content in Resources */,
-				EC846B122BEDDC3D00D4A430 /* Assets.xcassets in Resources */,
+				ECE4F10E2C0EAB770050E27D /* Preview Content in Resources */,
+				ECE4F10D2C0EAB770050E27D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
