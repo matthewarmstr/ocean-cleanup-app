@@ -136,6 +136,8 @@ struct Peripheral: View {
             Image(.arrow).resizable().frame(width: 70, height: 25).rotationEffect(.degrees(get_header_angle())).position(x:320, y:311)
         }.onAppear {
             timer.upstream.connect().cancel()
+            bluetoothModel.ultrasonicDistance = 0.0
+            
             bluetoothModel.connectPeripheral(peripheral_name: peripheralName)
         }.onDisappear {
             timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
