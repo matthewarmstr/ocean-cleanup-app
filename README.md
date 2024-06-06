@@ -8,7 +8,12 @@ This project was developed as part of our UC Davis ECS 193 Senior Design Project
 ## Interface Overview
 
 
-## Prerequisites and Requirements
-
+## Application Prerequisites and Requirements
+1. iOS 16 (see a list of compatible devices [here](https://support.apple.com/en-us/103267))
+2. XCode *(developed using ...)*
+3. Swift *(developed using ...)*
+4. SwiftUI *(developed using ...)*
 
 ## Installation and Deployment
+1. Clone this repository
+2. ...
