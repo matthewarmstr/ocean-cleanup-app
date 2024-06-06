@@ -10,8 +10,8 @@ The application utilizes two views. The initial view presents a list of all avai
 
 
 
-<img src="https://github.com/matthewarmstr/ocean-cleanup-app/assets/130256280/06f33d17-29ce-47c9-a51b-16309bbd2ba3" width="200" height="400" />
-<img src="https://github.com/matthewarmstr/ocean-cleanup-app/assets/130256280/fa6389bb-7134-4d46-9361-5b03d71c0293" width="500" height="250" />
+<img src="https://github.com/matthewarmstr/ocean-cleanup-app/assets/130256280/06f33d17-29ce-47c9-a51b-16309bbd2ba3" width="200" height="433" />
+<img src="https://github.com/matthewarmstr/ocean-cleanup-app/assets/130256280/fa6389bb-7134-4d46-9361-5b03d71c0293" width="541.33" height="250" />
 
 ## Application Prerequisites and Requirements
 1. iOS 16 (see a list of compatible devices [here](https://support.apple.com/en-us/103267))
