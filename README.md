@@ -21,3 +21,4 @@ The application utilizes two views. The initial view presents a list of all avai
 
 ## Installation and Deployment
 1. Clone this repository
+2. Build and follow instructions to run on phone, and change build identifier as necessary
